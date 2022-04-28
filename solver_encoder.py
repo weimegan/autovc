@@ -62,6 +62,11 @@ class Solver(object):
         print('Start training...')
         start_time = time.time()
         for i in range(self.num_iters):
+            #after every iteration save model and optimizer state
+            #https://pytorch.org/docs/stable/generated/torch.save.html 
+
+        
+            
 
             # =================================================================================== #
             #                             1. Preprocess input data                                #
@@ -87,6 +92,9 @@ class Solver(object):
                         
             # Identity mapping loss
             x_identic, x_identic_psnt, code_real = self.G(x_real, emb_org, emb_org)
+            # print("x_real ", x_real.size())
+            # x_identic = torch.squeeze(x_identic);
+            # print("x_identic ", x_identic.size())
             g_loss_id = F.mse_loss(x_real, x_identic)   
             g_loss_id_psnt = F.mse_loss(x_real, x_identic_psnt)   
             
@@ -106,6 +114,11 @@ class Solver(object):
             loss['G/loss_id'] = g_loss_id.item()
             loss['G/loss_id_psnt'] = g_loss_id_psnt.item()
             loss['G/loss_cd'] = g_loss_cd.item()
+            
+                #saves model state
+            torch.save(self.G.state_dict(), "/home/gridsan/aray/6345/autovc/model_state.pth")
+            
+            torch.save(self.g_optimizer.state_dict(), "/home/gridsan/aray/6345/autovc/optim_state.pth")
 
             # =================================================================================== #
             #                                 4. Miscellaneous                                    #
